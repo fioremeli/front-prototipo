@@ -1,6 +1,5 @@
 /**
- * EXIMIA CODE · Validación básica de formulario
- * Si pasa la validación, el formulario se envía de forma nativa por HTML/FormSubmit.
+ * EXIMIA CODE · Validación accesible y envío nativo estándar
  */
 (function () {
   'use strict';
@@ -30,6 +29,7 @@
       return message === '';
     }
 
+    // Validar en tiempo real cuando el usuario sale de un campo (blur)
     fields.forEach(function (field) {
       field.setAttribute('aria-invalid', 'false');
       field.addEventListener('blur', function () {
@@ -37,19 +37,27 @@
       });
     });
 
+    // Control al enviar el formulario
     form.addEventListener('submit', function (event) {
       const isValid = fields.map(validateField).every(Boolean);
-      
+      const status = form.querySelector('[data-form-status]');
+
       if (!isValid) {
-        event.preventDefault(); // Solo frena el envío si hay errores de validación
-        const status = form.querySelector('[data-form-status]');
+        // Si hay errores, frenamos el envío y avisamos
+        event.preventDefault();
         if (status) {
           status.className = 'form-status error';
-          status.textContent = 'Revisá los campos indicados antes de enviar.';
+          status.textContent = 'Por favor, revisá los campos marcados antes de enviar.';
         }
         form.querySelector('[aria-invalid="true"]')?.focus();
+      } else {
+        // Si es válido, NO usamos event.preventDefault(). 
+        // El navegador enviará los datos de forma nativa a FormSubmit por POST sin errores de CORS.
+        if (status) {
+          status.className = 'form-status success';
+          status.textContent = 'Enviando mensaje...';
+        }
       }
-      // Si es válido, NO se hace preventDefault(), por lo que el formulario se envía sí o sí.
     });
   });
 })();
