@@ -1,0 +1,80 @@
+/* ============================================================
+   BITÁCORA
+   Línea de tiempo, tabla de problemas/soluciones y checklist.
+   Eximia Code · Grupo 12 · TP1
+   ============================================================ */
+
+/* BITÁCORA: timeline y checklist organizan información secundaria de forma escaneable. */
+/* BITÁCORA */
+.timeline {
+  display: grid;
+  gap: 1rem;
+}
+
+.timeline article {
+  padding: 1.3rem 1.5rem;
+  border-left: 5px solid var(--accent-primary);
+  background: var(--bg-primary);
+  border-radius: 0 16px 16px 0;
+  border-block: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+}
+
+.timeline h3 {
+  margin: 0;
+}
+
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: .8rem;
+}
+
+.check {
+  padding: .9rem;
+  background: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+/* PROBLEMAS Y SOLUCIONES: se presentan como tarjetas semánticas para evitar scroll horizontal en celulares. */
+.problem-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.problem-card {
+  padding: 1.15rem 1.25rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.problem-card h3 {
+  margin: 0 0 .5rem;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.problem-card p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.problem-card code {
+  overflow-wrap: anywhere;
+}
+
+/* LISTAS SEMÁNTICAS: <ol>/<ul> sin viñetas ni márgenes por defecto */
+.timeline,
+.checklist {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline li {
+  min-width: 0;
+}
