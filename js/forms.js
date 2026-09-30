@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  /* FORMULARIOS: el endpoint AJAX mantiene al usuario en la misma página y permite anunciar el resultado. */
+  /* FORMULARIOS: fetch realiza el POST de forma asíncrona y mantiene al usuario en la misma página. */
   document.querySelectorAll('form[data-contact-form]').forEach(function (form) {
     const status = form.querySelector('[data-form-status]');
     const fields = Array.from(form.querySelectorAll('input[required], textarea[required]'));
@@ -48,7 +48,7 @@
     });
 
     form.addEventListener('submit', async function (event) {
-      /* event.preventDefault() evita la redirección; el envío se realiza contra el endpoint AJAX de FormSubmit. */
+      /* event.preventDefault() evita la redirección y permite controlar el resultado dentro del sitio. */
       event.preventDefault();
 
       const isValid = fields.map(validateField).every(Boolean);
@@ -60,24 +60,6 @@
           status.focus({ preventScroll: false });
         }
         form.querySelector('[aria-invalid="true"]')?.focus();
-        return;
-      }
-
-      /* CORRECCIÓN: Obtenemos el endpoint AJAX de manera dinámica en el momento del envío. 
-         Si pusiste data-ajax-action lo usa; si no, intenta transformar el action clásico automáticamente. */
-      let ajaxAction = form.dataset.ajaxAction;
-      if (!ajaxAction && form.action) {
-        // Transforma automáticamente https://formsubmit.co/tu@correo.com en https://formsubmit.co/ajax/tu@correo.com
-        ajaxAction = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
-      }
-
-      if (!ajaxAction) {
-        if (status) {
-          status.className = 'form-status error';
-          status.setAttribute('role', 'alert');
-          status.textContent = 'El formulario no tiene configurado el destino de envío.';
-          status.focus({ preventScroll: false });
-        }
         return;
       }
 
@@ -93,20 +75,14 @@
       }
 
       try {
-        /* Se utiliza FormData directamente para evitar bloqueos de CORS/Content-Type en FormSubmit */
-        const formData = new FormData(form);
-        const response = await fetch(ajaxAction, {
+        /* FormSubmit recibe el formulario mediante fetch y FormData; se conserva el envío AJAX sin abandonar la página. */
+        const response = await fetch(form.action, {
           method: 'POST',
-          headers: {
-            'Accept': 'application/json'
-          },
-          body: formData
+          headers: { Accept: 'application/json' },
+          body: new FormData(form)
         });
 
-        const data = await response.json().catch(function () { return null; });
-        
-        // Verificamos de forma flexible si el servicio respondió exitosamente
-        if (!response.ok || !data || (data.success !== true && data.success !== "true")) {
+        if (!response.ok) {
           throw new Error('El servicio de envío respondió con error.');
         }
 
@@ -114,8 +90,6 @@
         fields.forEach(function (field) {
           field.setAttribute('aria-invalid', 'false');
         });
-        
-        // Limpiamos los mensajes de error específicos de cada campo según tu HTML
         form.querySelectorAll('.form-error').forEach(function (error) {
           error.textContent = '';
         });
@@ -124,6 +98,7 @@
           status.className = 'form-status success';
           status.setAttribute('role', 'status');
           status.textContent = successMessage;
+          /* El foco queda en la confirmación para que Tab continúe desde un punto predecible. */
           status.focus({ preventScroll: false });
         }
       } catch (error) {
