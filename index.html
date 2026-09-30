@@ -240,27 +240,26 @@
       <p><strong>Email de equipo:</strong> <a href="mailto:alarconfiorellamelina@gmail.com">alarconfiorellamelina@gmail.com</a></p>
     </div>
     <div class="contact-card">
-     <form
-  class="contact-form"
-  action="https://formsubmit.co/alarconfiorellamelina@gmail.com"
-  method="POST"
+     <form 
+  class="contact-form" 
+  data-contact-form 
+  data-success-message="Mensaje enviado correctamente. ¡Gracias por comunicarte con Eximia Code!" 
+  data-email="alarconfiorellamelina@gmail.com" 
+  action="https://formsubmit.co/alarconfiorellamelina@gmail.com" 
+  method="POST" 
   novalidate
   aria-describedby="form-help"
 >
-  <!-- Campos de configuración de FormSubmit -->
+  <input type="hidden" name="_subject" value="Nueva consulta desde Eximia Code">
   <input type="hidden" name="_captcha" value="false">
   <input type="hidden" name="_template" value="table">
-  <input type="hidden" name="_subject" value="Nueva consulta desde Eximia Code">
-  
-  <!-- Redirección de vuelta a tu sitio con parámetro de éxito -->
-  <input type="hidden" name="_next" value="https://front-prototipo.vercel.app/index.html?enviado=true">
 
   <p class="form-help" id="form-help">Todos los campos son obligatorios. El mensaje debe tener al menos 10 caracteres.</p>
-  
+
   <div class="form-grid">
     <div class="field">
       <label for="nombre-grupo">Nombre completo</label>
-      <input id="nombre-grupo" name="nombre" type="text" autocomplete="name" minlength="3" required aria-describedby="nombre-grupo-error">
+      <input id="nombre-grupo" name="name" type="text" autocomplete="name" minlength="3" required aria-describedby="nombre-grupo-error">
       <p class="form-error" id="nombre-grupo-error" aria-live="polite"></p>
     </div>
     
@@ -272,13 +271,13 @@
     
     <div class="field full">
       <label for="asunto-grupo">Asunto</label>
-      <input id="asunto-grupo" name="asunto" type="text" minlength="3" required aria-describedby="asunto-grupo-error">
+      <input id="asunto-grupo" name="subject" type="text" minlength="3" required aria-describedby="asunto-grupo-error">
       <p class="form-error" id="asunto-grupo-error" aria-live="polite"></p>
     </div>
     
     <div class="field full">
       <label for="mensaje-grupo">Mensaje</label>
-      <textarea id="mensaje-grupo" name="mensaje" minlength="10" required aria-describedby="mensaje-grupo-error"></textarea>
+      <textarea id="mensaje-grupo" name="message" minlength="10" required aria-describedby="mensaje-grupo-error"></textarea>
       <p class="form-error" id="mensaje-grupo-error" aria-live="polite"></p>
     </div>
     
