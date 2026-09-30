@@ -13,7 +13,6 @@
     const originalButtonText = submitButton?.textContent.trim() || 'Enviar mensaje';
     const successMessage = form.dataset.successMessage ||
       'Mensaje enviado correctamente. ¡Gracias por contactarnos!';
-    const ajaxAction = form.dataset.ajaxAction;
 
     function setError(field, message) {
       const error = form.querySelector('#' + field.id + '-error');
@@ -64,11 +63,19 @@
         return;
       }
 
+      /* CORRECCIÓN: Obtenemos el endpoint AJAX de manera dinámica en el momento del envío. 
+         Si pusiste data-ajax-action lo usa; si no, intenta transformar el action clásico automáticamente. */
+      let ajaxAction = form.dataset.ajaxAction;
+      if (!ajaxAction && form.action) {
+        // Transforma automáticamente https://formsubmit.co/tu@correo.com en https://formsubmit.co/ajax/tu@correo.com
+        ajaxAction = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+      }
+
       if (!ajaxAction) {
         if (status) {
           status.className = 'form-status error';
           status.setAttribute('role', 'alert');
-          status.textContent = 'El formulario no tiene configurado el envío AJAX.';
+          status.textContent = 'El formulario no tiene configurado el destino de envío.';
           status.focus({ preventScroll: false });
         }
         return;
