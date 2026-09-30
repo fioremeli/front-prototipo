@@ -86,7 +86,7 @@
       }
 
       try {
-        /* Se utiliza FormData directamente para evitar conflictos con CORS y Content-Type de FormSubmit */
+        /* Se utiliza FormData directamente para evitar bloqueos de CORS/Content-Type en FormSubmit */
         const formData = new FormData(form);
         const response = await fetch(ajaxAction, {
           method: 'POST',
@@ -98,7 +98,7 @@
 
         const data = await response.json().catch(function () { return null; });
         
-        // Verificamos de forma flexible si el servicio respondió exitosamente (booleano o string)
+        // Verificamos de forma flexible si el servicio respondió exitosamente
         if (!response.ok || !data || (data.success !== true && data.success !== "true")) {
           throw new Error('El servicio de envío respondió con error.');
         }
@@ -107,6 +107,8 @@
         fields.forEach(function (field) {
           field.setAttribute('aria-invalid', 'false');
         });
+        
+        // Limpiamos los mensajes de error específicos de cada campo según tu HTML
         form.querySelectorAll('.form-error').forEach(function (error) {
           error.textContent = '';
         });
