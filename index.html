@@ -231,51 +231,58 @@
     </section>
 
     <!-- CONTACTO (#contacto): formulario accesible con validación y envío AJAX -->
-    <section class="section alt" id="contacto" aria-labelledby="contacto-titulo">
-      <div class="container contact-layout">
-        <div>
-          <span class="eyebrow">Contacto</span>
-          <h2 id="contacto-titulo">Hablemos con Eximia Code</h2>
-          <p class="muted">Enviá tu consulta al Grupo 12. El formulario valida los datos y realiza un envío AJAX sin abrir otra página.</p>
-          <p><strong>Email de equipo:</strong> <a href="mailto:alarconfiorellamelina@gmail.com">alarconfiorellamelina@gmail.com</a></p>
+<section class="section alt" id="contacto" aria-labelledby="contacto-titulo">
+  <div class="container contact-layout">
+    <div>
+      <span class="eyebrow">Contacto</span>
+      <h2 id="contacto-titulo">Hablemos con Eximia Code</h2>
+      <p class="muted">Enviá tu consulta al Grupo 12. El formulario valida los datos y realiza un envío AJAX sin abrir otra página.</p>
+      <p><strong>Email de equipo:</strong> <a href="mailto:alarconfiorellamelina@gmail.com">alarconfiorellamelina@gmail.com</a></p>
+    </div>
+    <div class="contact-card">
+      <form class="contact-form" data-contact-form data-success-message="Mensaje enviado correctamente. ¡Gracias por contactarnos!" action="https://formsubmit.co/alarconfiorellamelina@gmail.com" data-ajax-action="https://formsubmit.co/ajax/alarconfiorellamelina@gmail.com" method="POST" novalidate aria-describedby="form-help">
+        <input type="hidden" name="_subject" value="Consulta desde Eximia Code · Grupo 12">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        
+        <p class="form-help" id="form-help">Todos los campos son obligatorios. El mensaje debe tener al menos 10 caracteres.</p>
+        
+        <div class="form-grid">
+          <div class="field">
+            <label for="nombre-grupo">Nombre completo</label>
+            <input id="nombre-grupo" name="nombre" type="text" autocomplete="name" minlength="3" required aria-describedby="nombre-grupo-error">
+            <p class="form-error" id="nombre-grupo-error" aria-live="polite"></p>
+          </div>
+          
+          <div class="field">
+            <label for="email-grupo">Email</label>
+            <!-- Añadido _replyto para que FormSubmit sepa cuál es el mail del remitente -->
+            <input id="email-grupo" name="email" type="email" autocomplete="email" required aria-describedby="email-grupo-error">
+            <input type="hidden" name="_replyto">
+            <p class="form-error" id="email-grupo-error" aria-live="polite"></p>
+          </div>
+          
+          <div class="field full">
+            <label for="asunto-grupo">Asunto</label>
+            <input id="asunto-grupo" name="asunto" type="text" minlength="3" required aria-describedby="asunto-grupo-error">
+            <p class="form-error" id="asunto-grupo-error" aria-live="polite"></p>
+          </div>
+          
+          <div class="field full">
+            <label for="mensaje-grupo">Mensaje</label>
+            <textarea id="mensaje-grupo" name="mensaje" minlength="10" required aria-describedby="mensaje-grupo-error"></textarea>
+            <p class="form-error" id="mensaje-grupo-error" aria-live="polite"></p>
+          </div>
+          
+          <div class="field full">
+            <button class="btn btn-primary" type="submit">Enviar mensaje</button>
+            <p class="form-status" data-form-status role="status" aria-live="polite" tabindex="-1"></p>
+          </div>
         </div>
-        <div class="contact-card">
-          <form class="contact-form" data-contact-form data-success-message="Mensaje enviado correctamente. ¡Gracias por contactarnos!" action="https://formsubmit.co/alarconfiorellamelina@gmail.com" data-ajax-action="https://formsubmit.co/ajax/alarconfiorellamelina@gmail.com" method="POST" novalidate aria-describedby="form-help">
-            <input type="hidden" name="_subject" value="Consulta desde Eximia Code · Grupo 12">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
-            <p class="form-help" id="form-help">Todos los campos son obligatorios. El mensaje debe tener al menos 10 caracteres.</p>
-            <div class="form-grid">
-              <div class="field">
-                <label for="nombre-grupo">Nombre completo</label>
-                <input id="nombre-grupo" name="nombre" type="text" autocomplete="name" minlength="3" required aria-describedby="nombre-grupo-error">
-                <p class="form-error" id="nombre-grupo-error" aria-live="polite"></p>
-              </div>
-              <div class="field">
-                <label for="email-grupo">Email</label>
-                <input id="email-grupo" name="email" type="email" autocomplete="email" required aria-describedby="email-grupo-error">
-                <p class="form-error" id="email-grupo-error" aria-live="polite"></p>
-              </div>
-              <div class="field full">
-                <label for="asunto-grupo">Asunto</label>
-                <input id="asunto-grupo" name="asunto" type="text" minlength="3" required aria-describedby="asunto-grupo-error">
-                <p class="form-error" id="asunto-grupo-error" aria-live="polite"></p>
-              </div>
-              <div class="field full">
-                <label for="mensaje-grupo">Mensaje</label>
-                <textarea id="mensaje-grupo" name="mensaje" minlength="10" required aria-describedby="mensaje-grupo-error"></textarea>
-                <p class="form-error" id="mensaje-grupo-error" aria-live="polite"></p>
-              </div>
-              <div class="field full">
-                <button class="btn btn-primary" type="submit">Enviar mensaje</button>
-                <p class="form-status" data-form-status role="status" aria-live="polite" tabindex="-1"></p>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
+      </form>
+    </div>
+  </div>
+</section>
 
   <!-- FOOTER: navegación secundaria, insignias y "Volver arriba" -->
   <footer class="site-footer">
