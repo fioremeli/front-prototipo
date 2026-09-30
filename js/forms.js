@@ -1,11 +1,15 @@
 /**
- * EXIMIA CODE · Validación accesible y envío nativo estándar
+ * EXIMIA CODE · Validación accesible y envío asíncrono sin redirección
  */
 (function () {
   'use strict';
 
-  document.querySelectorAll('form').forEach(function (form) {
+  document.querySelectorAll('form[data-contact-form]').forEach(function (form) {
+    const status = form.querySelector('[data-form-status]');
     const fields = Array.from(form.querySelectorAll('input[required], textarea[required]'));
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton?.textContent || 'Enviar mensaje';
+    const successMessage = form.dataset.successMessage || 'Mensaje enviado correctamente. ¡Gracias por contactarnos!';
 
     function setError(field, message) {
       const error = form.querySelector('#' + field.id + '-error');
@@ -29,33 +33,74 @@
       return message === '';
     }
 
-    // Validar en tiempo real cuando el usuario sale de un campo (blur)
     fields.forEach(function (field) {
       field.setAttribute('aria-invalid', 'false');
       field.addEventListener('blur', function () {
         validateField(field);
       });
+      field.addEventListener('input', function () {
+        if (field.getAttribute('aria-invalid') === 'true') validateField(field);
+      });
     });
 
-    // Control al enviar el formulario
-    form.addEventListener('submit', function (event) {
-      const isValid = fields.map(validateField).every(Boolean);
-      const status = form.querySelector('[data-form-status]');
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
 
+      const isValid = fields.map(validateField).every(Boolean);
       if (!isValid) {
-        // Si hay errores, frenamos el envío y avisamos
-        event.preventDefault();
         if (status) {
           status.className = 'form-status error';
-          status.textContent = 'Por favor, revisá los campos marcados antes de enviar.';
+          status.setAttribute('role', 'alert');
+          status.textContent = 'Revisá los campos indicados antes de enviar.';
         }
         form.querySelector('[aria-invalid="true"]')?.focus();
-      } else {
-        // Si es válido, NO usamos event.preventDefault(). 
-        // El navegador enviará los datos de forma nativa a FormSubmit por POST sin errores de CORS.
+        return;
+      }
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Enviando…';
+      }
+      if (status) {
+        status.className = 'form-status';
+        status.setAttribute('role', 'status');
+        status.textContent = 'Enviando mensaje…';
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form)
+        });
+
+        if (!response.ok) throw new Error('El servicio de envío respondió con error.');
+
+        form.reset();
+        fields.forEach(function (field) {
+          field.setAttribute('aria-invalid', 'false');
+        });
+        form.querySelectorAll('.form-error').forEach(function (error) {
+          error.textContent = '';
+        });
+
         if (status) {
           status.className = 'form-status success';
-          status.textContent = 'Enviando mensaje...';
+          status.setAttribute('role', 'status');
+          status.textContent = successMessage;
+          status.focus({ preventScroll: false });
+        }
+      } catch (error) {
+        if (status) {
+          status.className = 'form-status error';
+          status.setAttribute('role', 'alert');
+          status.textContent = 'No pudimos enviar el mensaje. Verificá tu conexión e intentá nuevamente.';
+          status.focus({ preventScroll: false });
+        }
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
         }
       }
     });
