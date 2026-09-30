@@ -240,11 +240,18 @@
       <p><strong>Email de equipo:</strong> <a href="mailto:alarconfiorellamelina@gmail.com">alarconfiorellamelina@gmail.com</a></p>
     </div>
     <div class="contact-card">
-      <form action="https://formsubmit.co/alarconfiorellamelina@gmail.com" method="POST">
-        
-        <!-- Configuración recomendada de FormSubmit -->
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
+      <form
+  class="contact-form"
+  data-contact-form
+  data-success-message="Mensaje enviado correctamente. ¡Gracias por contactarnos!"
+  action="https://formsubmit.co/alarconfiorellamelina@gmail.com"
+  method="POST"
+  novalidate
+  aria-describedby="form-help"
+>
+  <input type="hidden" name="_subject" value="Consulta desde Eximia Code · Grupo 12">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_template" value="table">
 
         <p class="form-help" id="form-help">Todos los campos son obligatorios. El mensaje debe tener al menos 10 caracteres.</p>
         
