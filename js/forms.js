@@ -86,19 +86,20 @@
       }
 
       try {
-        /* FormSubmit documenta este endpoint con JSON y Accept: application/json para envíos AJAX. */
-        const payload = Object.fromEntries(new FormData(form).entries());
+        /* Se utiliza FormData directamente para evitar conflictos con CORS y Content-Type de FormSubmit */
+        const formData = new FormData(form);
         const response = await fetch(ajaxAction, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
-          body: JSON.stringify(payload)
+          body: formData
         });
 
         const data = await response.json().catch(function () { return null; });
-        if (!response.ok || !data || data.success !== true) {
+        
+        // Verificamos de forma flexible si el servicio respondió exitosamente (booleano o string)
+        if (!response.ok || !data || (data.success !== true && data.success !== "true")) {
           throw new Error('El servicio de envío respondió con error.');
         }
 
