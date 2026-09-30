@@ -1,18 +1,12 @@
 /**
- * EXIMIA CODE · Formularios de contacto
- * Validación accesible y envío AJAX con FormSubmit sin abandonar la página.
+ * EXIMIA CODE · Validación básica de formulario
+ * Si pasa la validación, el formulario se envía de forma nativa por HTML/FormSubmit.
  */
 (function () {
   'use strict';
 
-  /* FORMULARIOS: fetch realiza el POST de forma asíncrona y mantiene al usuario en la misma página. */
-  document.querySelectorAll('form[data-contact-form]').forEach(function (form) {
-    const status = form.querySelector('[data-form-status]');
+  document.querySelectorAll('form').forEach(function (form) {
     const fields = Array.from(form.querySelectorAll('input[required], textarea[required]'));
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton?.textContent.trim() || 'Enviar mensaje';
-    const successMessage = form.dataset.successMessage ||
-      'Mensaje enviado correctamente. ¡Gracias por contactarnos!';
 
     function setError(field, message) {
       const error = form.querySelector('#' + field.id + '-error');
@@ -36,86 +30,26 @@
       return message === '';
     }
 
-    /* La validación al salir del campo ofrece feedback temprano sin interrumpir la escritura. */
     fields.forEach(function (field) {
       field.setAttribute('aria-invalid', 'false');
       field.addEventListener('blur', function () {
         validateField(field);
       });
-      field.addEventListener('input', function () {
-        if (field.getAttribute('aria-invalid') === 'true') validateField(field);
-      });
     });
 
-    form.addEventListener('submit', async function (event) {
-      /* event.preventDefault() evita la redirección y permite controlar el resultado dentro del sitio. */
-      event.preventDefault();
-
+    form.addEventListener('submit', function (event) {
       const isValid = fields.map(validateField).every(Boolean);
+      
       if (!isValid) {
+        event.preventDefault(); // Solo frena el envío si hay errores de validación
+        const status = form.querySelector('[data-form-status]');
         if (status) {
           status.className = 'form-status error';
-          status.setAttribute('role', 'alert');
           status.textContent = 'Revisá los campos indicados antes de enviar.';
-          status.focus({ preventScroll: false });
         }
         form.querySelector('[aria-invalid="true"]')?.focus();
-        return;
       }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.setAttribute('aria-busy', 'true');
-        submitButton.textContent = 'Enviando…';
-      }
-      if (status) {
-        status.className = 'form-status';
-        status.setAttribute('role', 'status');
-        status.textContent = 'Enviando mensaje…';
-      }
-
-      try {
-        /* FormSubmit recibe el formulario mediante fetch y FormData; se conserva el envío AJAX sin abandonar la página. */
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: new FormData(form)
-        });
-
-        if (!response.ok) {
-          throw new Error('El servicio de envío respondió con error.');
-        }
-
-        form.reset();
-        fields.forEach(function (field) {
-          field.setAttribute('aria-invalid', 'false');
-        });
-        form.querySelectorAll('.form-error').forEach(function (error) {
-          error.textContent = '';
-        });
-
-        if (status) {
-          status.className = 'form-status success';
-          status.setAttribute('role', 'status');
-          status.textContent = successMessage;
-          /* El foco queda en la confirmación para que Tab continúe desde un punto predecible. */
-          status.focus({ preventScroll: false });
-        }
-      } catch (error) {
-        /* Si falla la red o el servicio, se informa el error sin fingir un envío exitoso. */
-        if (status) {
-          status.className = 'form-status error';
-          status.setAttribute('role', 'alert');
-          status.textContent = 'No pudimos enviar el mensaje. Verificá tu conexión e intentá nuevamente.';
-          status.focus({ preventScroll: false });
-        }
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-          submitButton.removeAttribute('aria-busy');
-          submitButton.textContent = originalButtonText;
-        }
-      }
+      // Si es válido, NO se hace preventDefault(), por lo que el formulario se envía sí o sí.
     });
   });
 })();
